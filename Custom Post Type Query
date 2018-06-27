@@ -1,0 +1,87 @@
+<?php
+// Put this code functions.php file
+function watch_video_home_func(){
+
+	ob_start(); 
+	echo '<ul class="watch_video">';			
+		$args = array(
+			'posts_per_page' => 6,
+			'offset' => 0,				
+			'orderby' => 'post_date',
+			'order' => 'DESC',				
+			'post_type' => 'watch',
+				
+		);
+
+		$recent_posts = new WP_Query($args);
+		
+		if ($recent_posts->have_posts()):
+		
+			while ( $recent_posts->have_posts()) : $recent_posts->the_post();
+
+			$event_date = date('d-m-Y',strtotime(get_post_meta( get_the_ID(), 'event_date', true)));
+
+			$get_custom_cat=get_the_terms( get_the_ID(), 'watch_category' );
+			//print_r($get_custom_cat);
+
+			$separator = ',';
+			$output = '';
+			if($get_custom_cat){
+				foreach($get_custom_cat as $category) {
+					$cat_link=home_url().'/watch_category/'.$category->slug;
+					
+					$output .="<a href =".$cat_link.">";
+				    $output .= $category->name.$separator;
+				    $output .='</a>';
+				    $get_cat=trim($output, $separator);
+				}
+			}					
+
+
+			echo '<li>
+				<div class="post-item">
+
+					<div class="image-area">
+						<a href="'. get_the_permalink().'">'. get_the_post_thumbnail() .'</a>
+					</div>
+
+					<div class="content-area">
+						<div class="category">'.$get_cat.'</div>					
+			
+						<h2 class="post-title"><a href="'. get_the_permalink().'">'. max_title_length(get_the_title()).'</a> </h2>
+						
+					</div>
+				</div>
+
+			</li>';
+
+
+			endwhile;
+
+		endif;	
+
+		wp_reset_query();
+	echo '</ul>';	
+
+
+	return ob_get_clean();
+}
+add_shortcode( 'watch_video' , 'watch_video_home_func' ); 
+
+function max_title_length( $title ) {
+	$max = 40;
+	if( strlen( $title ) > $max ) {
+		return substr( $title, 0, $max ). " &hellip;";
+	} 
+	else 
+	{
+		return $title;
+	}
+}
+
+?>
+
+
+// The following code put where you showing this
+
+<?php echo do_shortcode('[watch_video]'); ?>
