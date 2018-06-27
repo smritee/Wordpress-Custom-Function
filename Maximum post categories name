@@ -1,0 +1,30 @@
+<?php 
+// Put this code functions.php file
+function sort_categories_number_post(){
+	ob_start(); 
+	    //echo '<h4 class="popular_cat_custom_head widgettitle">Popular Categories</h4>';
+	    echo '<ul class="popular_cat_custom">';
+	    foreach (get_categories('orderby=count&order=DESC&number=5&parent=0') as $category ) 
+	    {
+	         if( $category->category_parent == '0') 
+	         { 
+	            $url = '';
+	            $url =  site_url() . '/' . $category->taxonomy . '/' . $category->slug ;
+	            echo '<li class="cat-item cat-item-' . $category->term_id . '"><a href="' . $url . '">' . $category->name . ' (' . $category->count . ')</a></li>';
+
+	         }
+	    }
+	    echo '</ul>';
+	return ob_get_clean();
+
+}
+
+
+add_shortcode('sort_categories','sort_categories_number_post');
+
+?>
+
+// The following code put where you showing this
+
+<?php echo do_shortcode('[sort_categories]'); ?>
+
