@@ -1,0 +1,37 @@
+<?php
+////Custom post type and taxonomy query
+// Speaker Details
+						$speaker_args = array(
+							'post_type' => 'speaker',
+							'tax_query' => array(
+							    array(
+							    'taxonomy' => $speaker_taxonomy,
+							    'field' => 'slug',
+							    'terms' => $speakertax_slug
+							     )						
+							  ),
+							'orderby' => 'title',
+							'order' => 'ASC' ,
+							'limit' => 1				
+						);
+						$query_speaker = new WP_Query( $speaker_args ); 	  					  				
+
+
+//Which taxonomy using this post
+
+ 
+
+$args=array(
+  'object_type' => array('speakertax') 
+); 
+
+$output = 'names'; // or objects
+$operator = 'and'; // 'and' or 'or'
+//$taxonomies=get_taxonomies($args,$output,$operator); 
+$taxonomies=get_taxonomies(); 
+if  ($taxonomies) {
+  foreach ($taxonomies  as $taxonomy ) {
+    echo '<p>'. $taxonomy. '</p>';
+  }
+}
+?>
