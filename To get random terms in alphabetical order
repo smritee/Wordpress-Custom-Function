@@ -1,0 +1,24 @@
+<?php
+//To get random terms in alphabetical order
+//http://wordpress.stackexchange.com/questions/104280/wordpress-query-based-on-random-taxonomy
+$max = 5; //number of categories to display
+$taxonomy = 'cp_recipe_category';
+$terms = get_terms($taxonomy, 'orderby=name&order= ASC&hide_empty=0');
+
+// Random order
+shuffle($terms);
+
+// Get first $max items
+$terms = array_slice($terms, 0, $max);
+
+// Sort by name
+usort($terms, function($a, $b){
+  return strcasecmp($a->name, $b->name);
+});
+
+// Echo random terms sorted alphabetically
+if ($terms) {
+  foreach($terms as $term) {
+    echo '<p><a href="' .get_term_link( $term, $taxonomy ) . '" title="' .  sprintf( __( "View all posts in %s" ), $term->name ) . '" ' . '>' . $term->name.'</a></p> ';
+  }
+}
